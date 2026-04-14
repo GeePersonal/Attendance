@@ -17,4 +17,5 @@ export interface PaginationParams {
     orderBy?: string;
     pageNumber?: number;
     pageSize?: number;
+    classId?: string;
 } // for session params and attendee params

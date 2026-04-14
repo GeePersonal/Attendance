@@ -7,7 +7,7 @@ import agent from "../../app/api/agent";
 import { User } from "../../app/models/user";
 import AppLoading from "../../app/components/AppLoading";
 
-declare var google: any;
+declare let google: any;
 
 function Login() {
   const navigate = useNavigate();
@@ -19,11 +19,11 @@ function Login() {
     resolver: yupResolver(loginFormSchema),
   });
 
-  const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string>();
 
   function storeUser(user: User) {
-    let claims = JSON.parse(atob(user.token.split(".")[1]));
+    const claims = JSON.parse(atob(user.token.split(".")[1]));
     const roles = typeof claims.role === "string" ? [claims.role] : claims.role;
     localStorage.setItem("user", JSON.stringify({ ...user, roles }));
     navigate("/user-profile");
@@ -49,7 +49,7 @@ function Login() {
   useEffect(() => {
     google.accounts.id.initialize({
       client_id:
-        "559758667407-k0a5jbbmsabs5v5e6carbuj4md1tluao.apps.googleusercontent.com",
+        "242008212164-j9kpnto3c30m8fn4u5vh7cj9q7koq5ph.apps.googleusercontent.com",
       callback: googleLogin,
     });
 
@@ -59,16 +59,15 @@ function Login() {
         theme: "outline",
         size: "large",
         type: "standard",
-        text: "sign_in_with", // can be either "sign_in_with" or "continue_with"
-        shape: "rectangular",
-        width: "250",
-        height: "200",
+        text: "continue_with",
+        shape: "pill",
+        width: "100%", // Let it scale via CSS container
         longtitle: true,
         onsuccess: googleLogin,
         onfailure: (error: any) => {
           console.log(error);
         },
-      } // customization attributes
+      }
     );
 
     google.accounts.id.prompt((notification: any) => {
@@ -80,7 +79,7 @@ function Login() {
         console.log("Prompt was dismissed");
       }
     });
-  }, [navigate, localStorage, window.location.search]);
+  }, [navigate, window.location.search]);
 
   const googleLogin = async (response: any) => {
     try {
@@ -92,210 +91,206 @@ function Login() {
   };
 
   return (
-    <div className="bg-purple-900 absolute top-0 left-0 bg-gradient-to-b from-gray-500 via-gray-500 to-slate-700 bottom-0 leading-5 h-full w-full">
-      <div className="bg-purple-900 absolute top-0 left-0 bg-gradient-to-b from-gray-500 via-gray-500 to-slate-700 bottom-0 leading-5 h-full w-full overflow-hidden"></div>
+    <div className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 md:px-8 relative overflow-hidden py-10 sm:py-12 md:py-16">
+      <style>
+        {`
+          .animated-grid {
+            position: absolute;
+            width: 250%;
+            height: 250%;
+            top: -75%;
+            left: -75%;
+            background-size: 40px 40px;
+            background-image: 
+              linear-gradient(to right, rgba(255, 255, 255, 0.4) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+            transform: perspective(800px) rotateX(60deg);
+            z-index: 0;
+            pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 20%, black 90%);
+            mask-image: linear-gradient(to bottom, transparent 20%, black 90%);
+          }
+          @media (min-width: 768px) {
+            .animated-grid {
+              background-size: 50px 50px;
+              width: 200%;
+              height: 200%;
+              top: -50%;
+              left: -50%;
+            }
+          }
+          .glass-panel {
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+          }
+          .gradient-text {
+            background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+          @keyframes shimmer {
+            100% { transform: translateX(100%); }
+          }
+        `}
+      </style>
 
-      <div className="relative min-h-screen  sm:flex sm:flex-row  justify-center bg-transparent rounded-3xl shadow-xl">
-        <div className="flex-col flex  self-center lg:px-14 w-[28rem] sm:max-w-4xl xl:max-w-md  z-10">
-          <div className=" self-start hidden lg:flex flex-col  text-gray-300">
-            <h1 className="my-3 font-semibold text-4xl">
-              Revolutionize Attendance Tracking with Count Me In!
-            </h1>
-            <p className="pr-3 text-sm text-gray-700 bg-slate-400 bg-opacity-50 p-4">
-              Say goodbye to traditional methods and hello to easy attendance
-              management. Designed with University of The Gambia lecturers in
-              mind, Count Me In streamlines the process. Now, students can log
-              their attendance without interference, promoting fairness.
-              <span className="inline-block">
-                The rule is simple: be present and scan the QR code. Join the
-                attendance revolution today!
-              </span>
-            </p>
+      {/* Grid Background */}
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden">
+         <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-transparent to-black/60 z-10"></div>
+         <div className="animated-grid"></div>
+      </div>
+
+      {/* Glow Effects */}
+      <div className="absolute top-0 right-0 sm:right-1/4 w-64 md:w-96 h-64 md:h-96 bg-white/[0.04] rounded-full blur-[100px] md:blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 sm:left-1/4 w-64 md:w-96 h-64 md:h-96 bg-white/[0.02] rounded-full blur-[80px] md:blur-[100px] pointer-events-none"></div>
+
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-16 max-w-6xl w-full">
+        {/* Left side - branding */}
+        <div className="hidden lg:flex flex-col flex-1 max-w-lg">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 w-fit mb-6 sm:mb-8 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+            <span className="text-white/70 text-xs font-medium tracking-wide uppercase">Attendance Reimagined</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight gradient-text">
+            Count Me In
+          </h1>
+          <p className="text-neutral-400 text-base md:text-lg leading-relaxed mt-4 sm:mt-6 font-light">
+            Revolutionize attendance tracking. Designed for University of The
+            Gambia lecturers &mdash; students scan, attendance logs. Simple, fair,
+            effortless.
+          </p>
+          <div className="mt-8 sm:mt-10 flex items-center gap-4 border-l-2 border-white/20 pl-4 py-1">
+            <span className="text-neutral-300 text-xs sm:text-sm tracking-widest uppercase font-semibold">Scan. Attend. Done.</span>
           </div>
         </div>
-        <div className="flex justify-center self-center  z-10">
-          <div className="p-12 pt-2 bg-white mx-auto rounded-3xl w-96 ">
-            <div className="mb-7">
-              <p className="text-xl font-semibold text-gray-800 capitalize">
-                To Log Attendance{" "}
+
+        {/* Right side - card */}
+        <div className="w-full max-w-md lg:ml-auto">
+          {/* Mobile branding header */}
+          <div className="lg:hidden text-center mb-8">
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight gradient-text">Count Me In</h1>
+            <p className="text-neutral-400 text-sm mt-3">Attendance Reimagined</p>
+          </div>
+
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 md:p-10 relative overflow-hidden group">
+            {/* Subtle highlight effect on top edge */}
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+
+            {/* Header */}
+            <div className="mb-8 md:mb-10 text-center lg:text-left">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Welcome Back</h2>
+              <p className="text-neutral-400 text-xs sm:text-sm">
+                Enter your details to access your account
               </p>
-              <button className="mt-4 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px]">
-                Scan QR Code <span className="ml-2">📱</span>
-              </button>
             </div>
-            <h3 className="font-semibold text-xl text-gray-800 mb-2 ">
-              Sign In{" "}
-            </h3>
 
-            <div>
-              {/* login form starts here */}
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="">
-                  <input
-                    className=" w-full text-sm  px-4 py-3 bg-gray-200 focus:bg-gray-100 border  border-gray-200 rounded-lg focus:outline-none focus:border-slate-400"
-                    type=""
-                    placeholder="Email"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-xs italic">
-                      {errors.email?.message}
-                    </p>
-                  )}
-                </div>
+            {/* Google sign-in */}
+            <div
+              id="buttonDiv"
+              className="w-full flex items-center justify-center mb-6 sm:mb-8 [&>div]:!w-full drop-shadow-md hover:drop-shadow-xl transition-all duration-300 overflow-hidden rounded-full"
+            ></div>
 
-                <div>
-                  <div className="relative">
-                    <input
-                      {...register("password")}
-                      placeholder="Password"
-                      type={showPassword ? "password" : "text"}
-                      className="text-sm px-4 py-3 rounded-lg w-full bg-gray-200 focus:bg-gray-100 border border-gray-200 focus:outline-none focus:border-slate-400"
-                    />
-                    <div className="flex items-center absolute inset-y-0 right-0 mr-3  text-sm leading-5">
-                      {showPassword ? (
-                        <svg
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="h-4 text-slate-500 hover:text-slate-700 transition-colors cursor-pointer"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144zm0-240a95.31 95.31 0 0 0-25.31 3.79 47.85 47.85 0 0 1-66.9 66.9A95.78 95.78 0 1 0 288 160z"
-                          ></path>
-                        </svg>
-                      ) : (
-                        <svg
-                          className="h-4 text-slate-500 hover:text-slate-700 transition-colors cursor-pointer"
-                          onClick={() => setShowPassword(!showPassword)}
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 640 512"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M320 400c-75.85 0-137.25-58.71-142.9-133.11L72.2 185.82c-13.79 17.3-26.48 35.59-36.72 55.59a32.35 32.35 0 0 0 0 29.19C89.71 376.41 197.07 448 320 448c26.91 0 52.87-4 77.89-10.46L346 397.39a144.13 144.13 0 0 1-26 2.61zm313.82 58.1l-110.55-85.44a331.25 331.25 0 0 0 81.25-102.07 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64a308.15 308.15 0 0 0-147.32 37.7L45.46 3.37A16 16 0 0 0 23 6.18L3.37 31.45A16 16 0 0 0 6.18 53.9l588.36 454.73a16 16 0 0 0 22.46-2.81l19.64-25.27a16 16 0 0 0-2.82-22.45zm-183.72-142l-39.3-30.38A94.75 94.75 0 0 0 416 256a94.76 94.76 0 0 0-121.31-92.21A47.65 47.65 0 0 1 304 192a46.64 46.64 0 0 1-1.54 10l-73.61-56.89A142.31 142.31 0 0 1 320 112a143.92 143.92 0 0 1 144 144c0 21.63-5.29 41.79-13.9 60.11z"
-                          ></path>
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                  {errors.password && (
-                    <p className="text-red-500 text-xs italic">
-                      {errors.password?.message}
-                    </p>
-                  )}
-                </div>
+            {/* Divider */}
+            <div className="flex items-center gap-4 mb-6 sm:mb-8">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/10"></div>
+              <span className="text-[10px] sm:text-xs font-medium text-neutral-500 uppercase tracking-wider">Or email</span>
+              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/10"></div>
+            </div>
 
-                {error && (
-                  <p className="text-red-500 text-xs italic">{error}</p>
-                )}
-
-                <div className="flex items-center justify-between">
-                  <div className="text-sm ml-auto">
-                    <a
-                      href="#"
-                      className="text-purple-700 hover:text-purple-600"
-                    >
-                      Forgot your password?
-                    </a>
-                  </div>
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className="my-4 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px]"
-                  >
-                    <div className="flex items-center justify-center">
-                      {isSubmitting && (
-                        <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
-                      )}{" "}
-                      <div className="ml-2"> Sign In </div>
-                    </div>
-                  </button>
-                  <p className="text-gray-400">
-                    Don't have an account?{" "}
-                    <Link
-                      to="/signup"
-                      className="text-sm text-purple-700 hover:text-purple-700"
-                    >
-                      Sign Up
-                    </Link>
+            {/* Login form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] sm:text-[11px] font-semibold text-neutral-400 tracking-wider uppercase">Email</label>
+                <input
+                  className="w-full text-sm text-white placeholder-neutral-600 px-4 sm:px-5 py-3.5 sm:py-4 bg-black/40 border border-white/10 rounded-2xl focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all appearance-none"
+                  type="email"
+                  inputMode="email"
+                  pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+                  placeholder="you@example.com"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="text-red-400 text-xs mt-1.5 pl-1">
+                    {errors.email?.message}
                   </p>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[10px] sm:text-[11px] font-semibold text-neutral-400 tracking-wider uppercase">Password</label>
+                  <a href="#" className="text-xs text-neutral-500 hover:text-white transition-colors">Forgot?</a>
                 </div>
-              </form>
-              {/* login form ends here */}
-              <div className="flex items-center justify-center space-x-2 my-5">
-                <span className="h-px w-16 bg-gray-100"></span>
-                <span className="text-gray-300 font-normal">or</span>
-                <span className="h-px w-16 bg-gray-100"></span>
-              </div>
-
-              <div className="flex justify-center gap-5 w-full ">
-                {isSubmitting && (
-                  <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
-                )}{" "}
-                <button
-                  id="buttonDiv"
-                  className="w-full flex items-center justify-center mb-6 md:mb-0 border border-gray-300 hover:border-slate-600 hover:bg-slate-700 hover:text-white text-sm text-gray-500 p-3  rounded-lg tracking-wide font-medium  cursor-pointer transition ease-in duration-500"
-                >
-                  <svg
-                    className="w-4 mr-2"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div className="relative">
+                  <input
+                    {...register("password")}
+                    placeholder="••••••••"
+                    type={showPassword ? "text" : "password"}
+                    className="w-full text-sm text-white placeholder-neutral-600 px-4 sm:px-5 py-3.5 sm:py-4 bg-black/40 border border-white/10 rounded-2xl focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all pr-[70px] appearance-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 px-4 sm:px-5 flex items-center outline-none group/btn"
                   >
-                    <path
-                      fill="#EA4335"
-                      d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.198 2.698 1.24 6.65l4.026 3.115Z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M16.04 18.013c-1.09.703-2.474 1.078-4.04 1.078a7.077 7.077 0 0 1-6.723-4.823l-4.04 3.067A11.965 11.965 0 0 0 12 24c2.933 0 5.735-1.043 7.834-3l-3.793-2.987Z"
-                    />
-                    <path
-                      fill="#4A90E2"
-                      d="M19.834 21c2.195-2.048 3.62-5.096 3.62-9 0-.71-.109-1.473-.272-2.182H12v4.637h6.436c-.317 1.559-1.17 2.766-2.395 3.558L19.834 21Z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.277 14.268A7.12 7.12 0 0 1 4.909 12c0-.782.125-1.533.357-2.235L1.24 6.65A11.934 11.934 0 0 0 0 12c0 1.92.445 3.73 1.237 5.335l4.04-3.067Z"
-                    />
-                  </svg>
-                  <span>Google</span>
-                </button>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 group-hover/btn:text-white transition-colors">
+                      {showPassword ? "Hide" : "Show"}
+                    </span>
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-red-400 text-xs mt-1.5 pl-1">
+                    {errors.password?.message}
+                  </p>
+                )}
               </div>
-            </div>
 
-            <div className="mt-7 text-center text-gray-300 text-xs">
-              <span>
-                Copyright © 2023-2024
-                <a
-                  href="#"
-                  rel=""
-                  target="_blank"
-                  title="Fabala Dibbasey"
-                  className="ml-2 text-purple-500 hover:text-purple-600 "
-                >
-                  Fabala
-                </a>
-              </span>
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-start gap-2 mt-4">
+                  <span className="text-red-300 text-xs sm:text-sm">{error}</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full relative overflow-hidden bg-white text-black font-bold text-xs sm:text-sm tracking-wide uppercase rounded-2xl py-3.5 sm:py-4 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] mt-6 sm:mt-8 group/btn2"
+              >
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn2:animate-[shimmer_1.5s_infinite]"></div>
+                <div className="relative flex items-center justify-center gap-3">
+                  {isSubmitting ? (
+                    <div className="h-4 w-4 sm:h-5 sm:w-5 border-2 border-black/20 border-t-black animate-spin rounded-full"></div>
+                  ) : (
+                    <span>Sign In Securely</span>
+                  )}
+                </div>
+              </button>
+
+              <div className="pt-4 sm:pt-5 text-center">
+                <p className="text-xs sm:text-sm font-medium text-neutral-500">
+                  New here?{" "}
+                  <Link
+                    to="/signup"
+                    className="text-white hover:text-neutral-300 font-bold transition-colors underline decoration-white/30 underline-offset-4"
+                  >
+                    Create an account
+                  </Link>
+                </p>
+              </div>
+            </form>
+
+            {/* Footer */}
+            <div className="mt-6 sm:mt-8 pt-6 border-t border-white/5 text-center">
+              <p className="text-neutral-600 text-[9px] sm:text-[10px] font-medium tracking-widest uppercase">
+                &copy; {new Date().getFullYear()} Gibril Crookes.
+              </p>
             </div>
           </div>
         </div>
       </div>
-      <svg
-        className="absolute bottom-0 left-0 "
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 1440 320"
-      >
-        <path
-          fill="#fff"
-          fillOpacity="1"
-          d="M0,0L40,42.7C80,85,160,171,240,197.3C320,224,400,192,480,154.7C560,117,640,75,720,74.7C800,75,880,117,960,154.7C1040,192,1120,224,1200,213.3C1280,203,1360,149,1400,122.7L1440,96L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"
-        ></path>
-      </svg>
     </div>
   );
 }

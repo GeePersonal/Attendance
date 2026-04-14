@@ -8,4 +8,6 @@ public class SessionsDto
     public string HostName { get; set; }
     public int AttendeesCount { get; set; }
     public string Status { get; set; }
+    public string? ClassId { get; set; }
+    public string? ClassName { get; set; }
 }

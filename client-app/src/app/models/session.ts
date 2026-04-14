@@ -5,6 +5,7 @@ export interface SessionFormValues {
     sessionExpiresAt: string
     linkExpiryFreequency: number
     regenerateLinkToken: boolean
+    classId?: string
 }
 
 export interface Session {
@@ -17,6 +18,8 @@ export interface Session {
     status: string
     linkExpiryFreequency: number
     regenerateLinkToken: boolean
+    classId?: string
+    className?: string
 }
 
 export interface SessionAttendees {

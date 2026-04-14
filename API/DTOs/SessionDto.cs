@@ -11,5 +11,7 @@ public class SessionDto
     public string Status { get; set; }
     public bool RegenerateLinkToken { get; set; }
     public int LinkExpiryFreequency { get; set; }
+    public string? ClassId { get; set; }
+    public string? ClassName { get; set; }
 
 }

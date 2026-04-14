@@ -35,133 +35,58 @@ function TestErrors() {
   }
 
   return (
-    <div className="w-screen flex flex-col items-center justify-cente">
-      <div className="w-full mx-auto py-16">
-        <h1 className="text-3xl text-center font-bold mb-6">Error testing</h1>
-        <div
-          className="
-          bg-white
-          px-6
-          py-4
-          my-3
-          w-3/4
-          mx-auto
-          shadow
-          rounded-md
-          flex
-          items-center
-        "
-        >
-          <div className="w-full text-center mx-auto">
-            <button
-              onClick={handleNotFound}
-              type="button"
-              className="
-              border border-indigo-500
-              bg-indigo-500
-              text-white
-              rounded-md
-              px-4
-              py-2
-              m-2
-              transition
-              duration-500
-              ease
-              select-none
-              hover:bg-indigo-600
-              focus:outline-none focus:shadow-outline
-            "
-            >
-              Not Found
-            </button>
-            <button
-              onClick={handleBadRequest}
-              type="button"
-              className="
-              border border-teal-500
-              bg-teal-500
-              text-white
-              rounded-md
-              px-4
-              py-2
-              m-2
-              transition
-              duration-500
-              ease
-              select-none
-              hover:bg-teal-600
-              focus:outline-none focus:shadow-outline
-            "
-            >
-              Bad request
-            </button>
-            <button
-              onClick={handleServerError}
-              type="button"
-              className="
-              border border-red-500
-              bg-red-500
-              text-white
-              rounded-md
-              px-4
-              py-2
-              m-2
-              transition
-              duration-500
-              ease
-              select-none
-              hover:bg-red-600
-              focus:outline-none focus:shadow-outline
-            "
-            >
-              Server error
-            </button>
-            <button
-              onClick={handleUnauthorised}
-              type="button"
-              className="
-              border border-yellow-500
-              bg-yellow-500
-              text-white
-              rounded-md
-              px-4
-              py-2
-              m-2
-              transition
-              duration-500
-              ease
-              select-none
-              hover:bg-yellow-600
-              focus:outline-none focus:shadow-outline
-            "
-            >
-              Not authorized
-            </button>
-            <button
-              onClick={handleValidationError}
-              type="button"
-              className="
-              border border-gray-500
-              bg-gray-500
-              text-white
-              rounded-md
-              px-4
-              py-2
-              m-2
-              transition`
-              duration-500
-              ease
-              select-none
-              hover:bg-gray-600
-              focus:outline-none focus:shadow-outline
-            "
-            >
-              Validation Error
-            </button>
-          </div>
+    <div className="w-full mx-auto px-4 md:px-8 py-8 animate-fade-in-up">
+      <div className="mb-10 text-center md:text-left">
+        <h2 className="text-4xl font-light tracking-tight text-white mb-2">Error Testing</h2>
+        <p className="text-neutral-500 font-light max-w-2xl">Use these buttons to trigger different API errors.</p>
+      </div>
+
+      <div className="glass-panel p-6 sm:p-8 md:p-10 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl relative overflow-hidden group">
+        {/* Subtle highlight effect on top edge */}
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+
+        <div className="flex flex-wrap justify-center gap-4">
+          <button
+            onClick={handleNotFound}
+            type="button"
+            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all font-light"
+          >
+            Not Found
+          </button>
+          <button
+            onClick={handleBadRequest}
+            type="button"
+            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all font-light"
+          >
+            Bad request
+          </button>
+          <button
+            onClick={handleServerError}
+            type="button"
+            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all font-light"
+          >
+            Server error
+          </button>
+          <button
+            onClick={handleUnauthorised}
+            type="button"
+            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all font-light"
+          >
+            Not authorized
+          </button>
+          <button
+            onClick={handleValidationError}
+            type="button"
+            className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-neutral-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all font-light"
+          >
+            Validation Error
+          </button>
         </div>
       </div>
-      {errors && <ValidationError errors={errors} />}
+
+      <div className="mt-8 max-w-2xl mx-auto">
+        {errors && <ValidationError errors={errors} />}
+      </div>
     </div>
   );
 }

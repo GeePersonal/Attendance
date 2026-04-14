@@ -20,6 +20,8 @@ public class MappingProfiles : Profile
         .ForMember(d => d.AttendeesCount, o => o.MapFrom(s => s.Attendees.Count))
         .ForMember(d => d.Status, o => o.MapFrom(s => s.SessionExpiresAt > DateTime.UtcNow ? SessionStatus.Active.ToString() : SessionStatus.Expired.ToString()))
         .ForMember(d => d.SessionExpiresAt, o => o.MapFrom(s => s.SessionExpiresAt))
+        .ForMember(d => d.ClassId, o => o.MapFrom(s => s.ClassId.HasValue ? s.ClassId.Value.ToString() : null))
+        .ForMember(d => d.ClassName, o => o.MapFrom(s => s.Class != null ? s.Class.Name : null))
         .ForMember(d => d.LinkToken, o => o.MapFrom((s, d, _, ctx) => ctx.Items.ContainsKey("LinkToken") ? ctx.Items["LinkToken"] : null)); // https://docs.automapper.org/en/stable/Custom-value-resolvers.html#passing-parameters-to-custom-resolvers
         // .ForMember(d => d.LinkToken, o => o.MapFrom((s, d, _, ctx) => ctx.Items["LinkToken"]));
 
@@ -28,7 +30,9 @@ public class MappingProfiles : Profile
         .ForMember(d => d.HostName, o => o.MapFrom(s => s.Host.FirstName + " " + s.Host.LastName))
         .ForMember(d => d.AttendeesCount, o => o.MapFrom(s => s.AttendeesCount))
         .ForMember(d => d.Status, o => o.MapFrom(s => s.Status))
-        .ForMember(d => d.SessionExpiresAt, o => o.MapFrom(s => s.SessionExpiresAt));
+        .ForMember(d => d.SessionExpiresAt, o => o.MapFrom(s => s.SessionExpiresAt))
+        .ForMember(d => d.ClassId, o => o.MapFrom(s => s.ClassId.HasValue ? s.ClassId.Value.ToString() : null))
+        .ForMember(d => d.ClassName, o => o.MapFrom(s => s.Class != null ? s.Class.Name : null));
 
         CreateMap<Session, SessionAttendeesDto>()
         .ForMember(d => d.SessionId, o => o.MapFrom(s => s.Id.ToString()))
@@ -37,6 +41,16 @@ public class MappingProfiles : Profile
         .ForMember(d => d.Status, o => o.MapFrom(s => s.SessionExpiresAt > DateTime.UtcNow ? SessionStatus.Active.ToString() : SessionStatus.Expired.ToString()))
         .ForMember(d => d.SessionExpiresAt, o => o.MapFrom(s => s.SessionExpiresAt));
         // .ForMember(d => d.Attendees, o => o.MapFrom(s => s.Attendees.AsQueryable().ProjectTo<AttendeeDto>(_mapper.ConfigurationProvider)));
+
+        CreateMap<Class, ClassDto>()
+        .ForMember(d => d.ClassId, o => o.MapFrom(s => s.Id.ToString()))
+        .ForMember(d => d.HostName, o => o.MapFrom(s => s.Host.FirstName + " " + s.Host.LastName))
+        .ForMember(d => d.SessionsCount, o => o.MapFrom(s => s.Sessions.Count));
+
+        CreateMap<Class, ClassesDto>()
+        .ForMember(d => d.ClassId, o => o.MapFrom(s => s.Id.ToString()))
+        .ForMember(d => d.HostName, o => o.MapFrom(s => s.Host.FirstName + " " + s.Host.LastName))
+        .ForMember(d => d.SessionsCount, o => o.MapFrom(s => s.Sessions.Count));
 
         CreateMap<AppUser, UserDto>()
         .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.FirstName + " " + s.LastName))

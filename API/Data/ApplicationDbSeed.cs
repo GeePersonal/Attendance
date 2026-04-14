@@ -16,10 +16,10 @@ namespace API.Data
                 {
                     new AppUser
                     {
-                        FirstName = "Bob",
-                        LastName = "Bobbity",
-                        UserName = "bob@gmail.com",
-                        Email = "bob@gmail.com"
+                        FirstName = "Gibril",
+                        LastName = "Crookes",
+                        UserName = "gibril",
+                        Email = "gibril@gmail.com"
                     },
                     new AppUser
                     {

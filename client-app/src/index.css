@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.react-confirm-alert-overlay {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.react-confirm-alert-body {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  width: auto !important;
+}

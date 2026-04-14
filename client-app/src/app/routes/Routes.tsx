@@ -13,6 +13,10 @@ import AttendanceRoutes from "./AttendanceRoutes";
 import NotFound from "../../features/Errors/NotFound";
 import TestErrors from "../../features/Errors/TestErrors";
 import ServerError from "../../features/Errors/ServerError";
+import DashboardLayout from "../layout/DashboardLayout";
+import ClassList from "../../features/dashboard/ClassList";
+import ClassDetails from "../../features/dashboard/ClassDetails";
+import CreateClassForm from "../../features/dashboard/CreateClassForm";
 
 export const Routes: RouteObject[] = [
   {
@@ -42,23 +46,43 @@ export const Routes: RouteObject[] = [
         children: [
           {
             path: "/user-profile",
-            element: <UserProfile />,
+            element: <DashboardLayout />,
             children: [
               {
-                path: "/user-profile",
+                index: true,
                 element: <CurrentSession />,
               },
               {
-                path: "/user-profile/current-session",
+                path: "current-session",
                 element: <CurrentSession />,
               },
               {
-                path: "/user-profile/generate-qr-code/:id?",
+                path: "generate-qr-code/:id?",
                 element: <GenerateQRCodeForm />,
               },
               {
-                path: "/user-profile/session-history",
+                path: "session-history",
                 element: <SessionHistory />,
+              },
+              {
+                path: "classes",
+                element: <ClassList />,
+              },
+              {
+                path: "classes/:id",
+                element: <ClassDetails />,
+              },
+              {
+                path: "create-class/:id?",
+                element: <CreateClassForm />,
+              },
+              {
+                path: "profile",
+                element: <UserProfile />,
+              },
+              {
+                path: "session-details/:id",
+                element: <SessionDetails />,
               },
             ],
           },

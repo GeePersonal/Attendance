@@ -4,37 +4,31 @@ interface Props {
 
 function ValidationError({ errors }: Props) {
   return (
-    <div className="bg-red-50 border-l-8 border-red-900 mb-2">
-      <div className="flex items-center">
-        <div className="p-2">
-          <div className="flex items-center">
-            <div className="ml-2">
-              <svg
-                className="h-8 w-8 text-red-900 mr-2 cursor-pointer"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <p className="px-6 py-4 text-red-900 font-semibold text-lg">
-              Please fix the following errors.
-            </p>
-          </div>
-          <div className="px-16 mb-4">
-            <ul className="list-disc list-inside">
-              {errors.map((error) => (
-                <li className="text-red-900 text-sm">{error}</li>
-              ))}
-            </ul>
-          </div>
+    <div className="bg-red-500/10 border-l-4 border-red-500/50 rounded-r-xl mb-4 p-4 mt-4">
+      <div className="flex items-start">
+        <div className="flex-shrink-0">
+          <svg
+            className="h-6 w-6 text-red-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <div className="ml-3">
+          <h3 className="text-sm font-medium text-red-400 mb-2">Please fix the following errors:</h3>
+          <ul className="list-disc list-inside text-sm text-red-400/80 space-y-1">
+            {errors.map((error, i) => (
+              <li key={i}>{error}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

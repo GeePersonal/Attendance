@@ -35,6 +35,14 @@ public class SessionController : BaseApiController
     {
         var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
 
+        Class? @class = null;
+        if (createSessionDto.ClassId.HasValue)
+        {
+            @class = await _context.Classes
+                .FirstOrDefaultAsync(x => x.Id == createSessionDto.ClassId.Value && x.HostId == user.Id);
+            if (@class == null) return BadRequest("Invalid class id");
+        }
+
         var session = new Session
         {
             SessionName = createSessionDto.SessionName,
@@ -42,6 +50,7 @@ public class SessionController : BaseApiController
             Host = user!,
             LinkExpiryFreequency = createSessionDto.LinkExpiryFreequency < 30 ? 30 : createSessionDto.LinkExpiryFreequency,
             RegenerateLinkToken = createSessionDto.RegenerateLinkToken,
+            Class = @class,
         };
 
         _context.Sessions.Add(session);
@@ -87,7 +96,9 @@ public class SessionController : BaseApiController
         var query = _context.Sessions
             .Include(x => x.Host)
             .Include(x => x.Attendees)
+            .Include(x => x.Class)
             .Where(x => x.Host == user)
+            .Where(x => sessionParams.ClassId == null || x.ClassId == sessionParams.ClassId)
             .SortSessions(sessionParams.OrderBy ?? "sessionCreatedAtDesc")
             .SearchSessions(sessionParams.SearchTerm)
             .ProjectTo<SessionsDto>(_mapper.ConfigurationProvider)
@@ -109,6 +120,7 @@ public class SessionController : BaseApiController
 
         var session = await _context.Sessions
             .Include(x => x.Host)
+            .Include(x => x.Class)
             .Where(x => x.Host == user && x.Id == Guid.Parse(sessionId))
             .AsNoTracking()
             .FirstOrDefaultAsync();
@@ -181,6 +193,38 @@ public class SessionController : BaseApiController
 
         Response.Cookies.Append("refereshLinkToken", token.Token, cookieOptions);
 
+    }
+
+    [Authorize]
+    [HttpPost("cloneSession/{sessionId}")]
+    public async Task<ActionResult<SessionDto>> CloneSession(string sessionId)
+    {
+        var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+
+        var original = await _context.Sessions
+            .Include(x => x.Host)
+            .Include(x => x.Class)
+            .FirstOrDefaultAsync(x => x.Id == Guid.Parse(sessionId) && x.HostId == user.Id);
+
+        if (original == null) return BadRequest("Invalid session id");
+
+        var session = new Session
+        {
+            SessionName = original.SessionName + " (Copy)",
+            SessionExpiresAt = DateTime.UtcNow.AddMinutes(30),
+            Host = user!,
+            LinkExpiryFreequency = original.LinkExpiryFreequency,
+            RegenerateLinkToken = original.RegenerateLinkToken,
+            Class = original.Class,
+        };
+
+        _context.Sessions.Add(session);
+        await _context.SaveChangesAsync();
+
+        await SetRefereshLinkTokenCookie(session);
+        var token = _tokenService.CreateAttendanceLinkToken(session);
+
+        return _mapper.Map<SessionDto>(session, opt => opt.Items["LinkToken"] = token);
     }
 
     [Authorize]

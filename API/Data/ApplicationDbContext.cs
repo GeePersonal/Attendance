@@ -35,6 +35,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
 
     public DbSet<Attendee> Attendees { get; set; }
     public DbSet<Session> Sessions { get; set; }
+    public DbSet<Class> Classes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -45,5 +46,11 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             new IdentityRole { Id = "2", Name = "Host", NormalizedName = "HOST" },
             new IdentityRole { Id = "3", Name = "Attendee", NormalizedName = "Attendee" }
         ));
+
+        builder.Entity<Class>()
+            .HasMany(c => c.Sessions)
+            .WithOne(s => s.Class)
+            .HasForeignKey(s => s.ClassId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

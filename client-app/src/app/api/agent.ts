@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { User, UserSignInForm, UserSignUpForm } from "../models/user";
 import { Session, SessionAttendees, SessionFormValues } from "../models/session";
+import { Class, ClassFormValues } from "../models/class";
 import { toast } from "react-toastify";
 import { router } from "../routes/Routes";
 import { Attendee } from "../models/attendance";
@@ -123,14 +124,26 @@ const Session = {
     deleteSession: (id: string) => requests.del<void>(`/session/deleteSession/${id}`),
     getSession: (id: string) => requests.get<Session>(`/session/getSession/${id}`),
     updateSession: (id: string, updateSession: SessionFormValues) => requests.put<Session>(`/session/updateSession/${id}`, updateSession),
+    cloneSession: (id: string) => requests.post<Session>(`/session/cloneSession/${id}`, {}),
     getCurrentSession: () => requests.get<Session>('/session/getCurrentSession'),
     refreshLinkToken: (sessionId: string) => requests.post<Session>(`/session/refereshLinkToken/${sessionId}`, {}),
+};
+
+const ClassApi = {
+    createClass: (data: ClassFormValues) => requests.post<Class>('/class/createClass', data),
+    getClasses: (params?: URLSearchParams) => requests.get<Pagination<Class>>('/class/getClasses', params),
+    getClass: (id: string) => requests.get<Class>('/class/getClass/' + id),
+    updateClass: (id: string, data: ClassFormValues) => requests.put<Class>(`/class/updateClass/${id}`, data),
+    deleteClass: (id: string) => requests.del<void>(`/class/deleteClass/${id}`),
+    addSessionToClass: (classId: string, sessionId: string) => requests.post<void>(`/class/addSessionToClass/${classId}/${sessionId}`, {}),
+    removeSessionFromClass: (classId: string, sessionId: string) => requests.del<void>(`/class/removeSessionFromClass/${classId}/${sessionId}`),
 };
 
 const agent = {
     Attendance,
     Account,
     Session,
+    Class: ClassApi,
 }
 
 export default agent;

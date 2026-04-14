@@ -17,14 +17,17 @@ public class AccountController : BaseApiController
     private readonly SignInManager<AppUser> _signInManager;
     private readonly TokenService _tokenService;
     private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
     public AccountController(UserManager<AppUser> userManager,
                              SignInManager<AppUser> signInManager,
-                             TokenService tokenService, IMapper mapper)
+                             TokenService tokenService, IMapper mapper,
+                             IConfiguration configuration)
     {
         _mapper = mapper;
         _signInManager = signInManager;
         _userManager = userManager;
         _tokenService = tokenService;
+        _configuration = configuration;
     }
 
     [AllowAnonymous]
@@ -81,8 +84,11 @@ public class AccountController : BaseApiController
     [HttpPost("googleLogin")]
     public async Task<ActionResult<UserDto>> GoogleLogin(string accessToken)
     {
-        var payload = await GoogleJsonWebSignature.ValidateAsync(accessToken, new GoogleJsonWebSignature.ValidationSettings());
-
+        var payload = await GoogleJsonWebSignature.ValidateAsync(accessToken, 
+    new GoogleJsonWebSignature.ValidationSettings 
+    { 
+        Audience = new[] { _configuration["Google:ClientId"] } 
+    });
         if (payload == null)
         {
             return BadRequest("Invalid access token");

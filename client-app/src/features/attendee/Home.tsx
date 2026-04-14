@@ -132,22 +132,26 @@ function Home() {
   if (loading) return <AppLoading />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-white/[0.04] rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-64 md:w-96 h-64 md:h-96 bg-white/[0.02] rounded-full blur-[80px] pointer-events-none"></div>
+
+      <div className="relative z-10 bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 max-w-md w-full backdrop-blur-2xl shadow-2xl">
         <div className="flex justify-center mb-8">
-          <img src="/images/logo.png" alt="Logo" className="w-30 h-20" />
+          <img src="/images/logo.png" alt="Logo" className="w-30 h-20 opacity-90" />
         </div>
 
-        <h1 className="text-2xl font-semibold text-center text-gray-500 mt-8 mb-6">
+        <h1 className="text-2xl font-bold text-center text-white mb-6 tracking-tight">
           Hello there, Welcome!
         </h1>
+        
         {attendee ? (
           <div
-            className="flex bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
+            className="flex bg-green-500/10 border border-green-500/20 rounded-xl p-4 mb-4 text-sm text-green-400"
             role="alert"
           >
             <svg
-              className="w-5 h-5 inline mr-3"
+              className="w-5 h-5 flex-shrink-0 mr-3"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -159,50 +163,49 @@ function Home() {
               ></path>
             </svg>
             <div>
-              <span className="font-medium">
+              <span className="font-semibold text-green-300 block mb-1">
                 {`${attendee.firstName} ${attendee.lastName} (${attendee.matNumber})`}
-                !
               </span>{" "}
               You have successfully registered for the '
-              {sessionInfo.sessionName}' session, hosted by {sessionInfo.host}.
+              <span className="text-white font-medium">{sessionInfo.sessionName}</span>' session, hosted by <span className="text-white font-medium">{sessionInfo.host}</span>.
             </div>
           </div>
         ) : (
-          <p className="text-sm text-gray-600 text-justify mt-8 mb-6">
-            By clicking on countinue with Google, your name, email and MATNumber
-            will be sent to the '{sessionInfo.sessionName}' session, hosted by{" "}
-            {sessionInfo.host}, for registration purposes only.
+          <p className="text-sm text-neutral-400 text-center leading-relaxed mt-4 mb-8 font-light">
+            By continuing with Google, your name, email and MATNumber
+            will be sent to the '<span className="text-white font-medium">{sessionInfo.sessionName}</span>' session, hosted by{" "}
+            <span className="text-white font-medium">{sessionInfo.host}</span>, for registration purposes only.
           </p>
         )}
 
         {attendee ? (
-          <div className="flex justify-center space-x-4 my-4">
+          <div className="flex justify-center w-full my-4">
             <button
               onClick={exitPageOnSave}
-              className="my-4 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px]"
+              className="w-full py-3.5 px-6 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 border border-white/10 transition-all text-sm tracking-wide uppercase"
             >
               Save To Exit Page
             </button>
           </div>
         ) : (
-          <div className="flex justify-center space-x-4 my-4">
-            <button
+          <div className="flex justify-center w-full my-4">
+            <div
               id="buttonDiv"
-              className="my-4 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px]"
+              className="w-full flex justify-center [&>div]:!w-full [&_iframe]:!w-full overflow-hidden rounded-xl bg-white/5 border border-white/10 p-1"
             >
-              Continue with Google
-            </button>
+              {/* Google Button renders here */}
+            </div>
           </div>
         )}
 
         {!attendee && sessionInfo.expired && (
-          <>
+          <div className="mt-8 space-y-4">
             <div
-              className="flex bg-yellow-100 rounded-lg p-4 mb-4 text-sm text-yellow-700"
+              className="flex bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 text-sm text-yellow-400"
               role="alert"
             >
               <svg
-                className="w-5 h-5 inline mr-3"
+                className="w-5 h-5 flex-shrink-0 mr-3 text-yellow-500"
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -214,21 +217,21 @@ function Home() {
                 ></path>
               </svg>
               <div>
-                <span className="font-medium">Invalid Link!</span> This link is
-                either expired or was not meant for you. Please re scan the QR
-                code or contact the session's host.
+                <span className="font-semibold block mb-1 text-yellow-300">Invalid Link!</span> 
+                This link is either expired or was not meant for you. Please re scan the QR code or contact the session host.
               </div>
             </div>
-            <button className="my-4 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px]">
+            <button className="w-full py-3.5 px-6 rounded-xl bg-white/5 text-neutral-300 font-medium hover:bg-white/10 hover:text-white border border-white/10 transition-all text-sm tracking-wide uppercase">
               Scan QR Code Again
             </button>
-          </>
+          </div>
         )}
-        <p className="text-gray-400">
+        
+        <p className="text-neutral-500 text-sm text-center mt-8 font-light">
           Interested in Hosting a Session?{" "}
           <Link
             to="/login"
-            className="text-sm text-purple-700 hover:text-purple-700"
+            className="text-white hover:text-neutral-300 font-medium ml-1 transition-colors"
           >
             Sign In
           </Link>

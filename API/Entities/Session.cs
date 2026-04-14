@@ -16,6 +16,8 @@ public class Session
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool RegenerateLinkToken { get; set; } = true;
     public int LinkExpiryFreequency { get; set; } = 30;
+    public Guid? ClassId { get; set; }
+    public Class? Class { get; set; }
     public List<Attendee> Attendees { get; set; } = new List<Attendee>();
 
     public List<RefereshLinkToken> RefereshLinkTokens { get; set; } = new List<RefereshLinkToken>();
