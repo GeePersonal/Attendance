@@ -484,27 +484,32 @@
 
 # flyctl launch added from client-app\.gitignore
 # Logs
-client-app\**\logs
-client-app\**\*.log
-client-app\**\npm-debug.log*
-client-app\**\yarn-debug.log*
-client-app\**\yarn-error.log*
-client-app\**\pnpm-debug.log*
-client-app\**\lerna-debug.log*
+client-app/**/logs
+client-app/**/*.log
+client-app/**/npm-debug.log*
+client-app/**/yarn-debug.log*
+client-app/**/yarn-error.log*
+client-app/**/pnpm-debug.log*
+client-app/**/lerna-debug.log*
 
-client-app\**\node_modules
-client-app\**\dist
-client-app\**\dist-ssr
-client-app\**\*.local
+client-app/**/node_modules
+client-app/**/dist
+client-app/**/dist-ssr
+client-app/**/*.local
 
 # Editor directories and files
-client-app\**\.vscode\*
-!client-app\**\.vscode\extensions.json
-client-app\**\.idea
-client-app\**\.DS_Store
-client-app\**\*.suo
-client-app\**\*.ntvs*
-client-app\**\*.njsproj
-client-app\**\*.sln
-client-app\**\*.sw?
+client-app/**/.vscode/*
+!client-app/**/.vscode/extensions.json
+client-app/**/.idea
+client-app/**/.DS_Store
+client-app/**/*.suo
+client-app/**/*.ntvs*
+client-app/**/*.njsproj
+client-app/**/*.sln
+client-app/**/*.sw?
 fly.toml
+
+# Not needed in Docker image
+.github
+API.Tests
+README.md
