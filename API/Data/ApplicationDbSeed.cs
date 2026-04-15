@@ -41,7 +41,7 @@ namespace API.Data
                 {
                     await UserManager.CreateAsync(user, "Pa$$w0rd");
 
-                    if (user.UserName == "bob@gmail.com")
+                    if (user.UserName == "gibril")
                     {
                         await UserManager.AddToRolesAsync(user, new[] { "Admin", "Host" });
                     }
@@ -61,7 +61,7 @@ namespace API.Data
                 {
                     new Session
                     {
-                        HostId = UserManager.Users.FirstOrDefault(u => u.UserName == "bob@gmail.com").Id,
+                        HostId = UserManager.Users.FirstOrDefault(u => u.UserName == "gibril")?.Id,
                         SessionName = "Session 1",
                         SessionExpiresAt = DateTime.UtcNow.AddDays(1),
                         Attendees = new List<Attendee>
@@ -94,7 +94,7 @@ namespace API.Data
                     },
                     new Session
                     {
-                        HostId = UserManager.Users.FirstOrDefault(u => u.UserName == "bob@gmail.com").Id,
+                        HostId = UserManager.Users.FirstOrDefault(u => u.UserName == "gibril")?.Id,
                         SessionName = "Session 2",
                         SessionExpiresAt = DateTime.UtcNow.AddDays(1),
                         Attendees = new List<Attendee>

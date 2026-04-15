@@ -46,9 +46,12 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+        ?? new[] { "http://localhost:5173", "https://localhost:7231" };
+
     options.AddPolicy("CorsPolicy",
         builder => builder
-        .WithOrigins("http://localhost:5173", "https://localhost:7231")
+        .WithOrigins(allowedOrigins)
         .AllowAnyMethod()
         .AllowCredentials()
         .AllowAnyHeader()
@@ -60,22 +63,26 @@ if (builder.Environment.IsDevelopment())
     connString = builder.Configuration.GetConnectionString("DefaultConnection");
 else
 {
-    // Use connection string provided at runtime by FlyIO.
-    var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    // First check for a direct connection string (Neon, Supabase, etc.)
+    connString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
-    // Parse connection URL to connection string for Npgsql
-    connUrl = connUrl.Replace("postgres://", string.Empty);
-    string pgUserPass = connUrl.Split("@")[0];
-    string pgHostPortDb = connUrl.Split("@")[1];
-    string pgHostPort = pgHostPortDb.Split("/")[0];
-    string pgDb = pgHostPortDb.Split("/")[1];
-    string pgUser = pgUserPass.Split(":")[0];
-    string pgPass = pgUserPass.Split(":")[1];
-    string pgHost = pgHostPort.Split(":")[0];
-    string pgPort = pgHostPort.Split(":")[1];
-    string updatedHost = pgHost.Replace("flycast", "internal");
+    if (string.IsNullOrEmpty(connString))
+    {
+        // Fallback: parse DATABASE_URL (postgres:// format)
+        var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-    connString = $"Server={updatedHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}";
+        connUrl = connUrl.Replace("postgres://", string.Empty);
+        string pgUserPass = connUrl.Split("@")[0];
+        string pgHostPortDb = connUrl.Split("@")[1];
+        string pgHostPort = pgHostPortDb.Split("/")[0];
+        string pgDb = pgHostPortDb.Split("/")[1];
+        string pgUser = pgUserPass.Split(":")[0];
+        string pgPass = pgUserPass.Split(":")[1];
+        string pgHost = pgHostPort.Split(":")[0];
+        string pgPort = pgHostPort.Split(":")[1];
+
+        connString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}";
+    }
 }
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
@@ -162,6 +169,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGet("/health", () => Results.Ok("healthy"));
 app.MapFallbackToController("Index", "Fallback");
 
 using var scope = app.Services.CreateScope();
