@@ -2,6 +2,7 @@ export interface User {
     displayName: string;
     token: string;
     username: string;
+    email: string;
     profileImageUrl: string;
     roles?: string[] 
 }

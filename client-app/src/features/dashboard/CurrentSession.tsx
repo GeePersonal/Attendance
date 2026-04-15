@@ -3,7 +3,6 @@ import agent from "../../app/api/agent";
 import { useEffect, useState } from "react";
 import { Session } from "../../app/models/session";
 import { useLocation } from "react-router-dom";
-import AppLoading from "../../app/components/AppLoading";
 import { format } from "date-fns";
 
 export default function CurrentSession() {
