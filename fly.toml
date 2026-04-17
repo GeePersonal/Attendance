@@ -7,12 +7,12 @@ app = "countmein"
 primary_region = "cdg"
 
 [build]
-  image = "fabala/countmein:latest"
+  dockerfile = "API/Dockerfile"
 
 [env]
 ASPNETCORE_URLS="http://+:8080"
 Google__ClientId="242008212164-j9kpnto3c30m8fn4u5vh7cj9q7koq5ph.apps.googleusercontent.com"
-AllowedOrigins__0="https://countmein.fly.dev"
+AllowedOrigins__0="https://attendance-beya.vercel.app"
 
 [http_service]
   internal_port = 8080
