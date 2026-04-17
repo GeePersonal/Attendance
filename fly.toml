@@ -1,23 +1,23 @@
-# fly.toml app configuration file generated for countmein on 2023-09-27T01:41:52Z
+# fly.toml app configuration file generated for attendance-gjbzva on 2026-04-17T10:24:50Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "countmein"
-primary_region = "cdg"
+app = 'attendance-gjbzva'
+primary_region = 'cdg'
 
 [build]
-  dockerfile = "API/Dockerfile"
-
-[env]
-ASPNETCORE_URLS="http://+:8080"
-Google__ClientId="242008212164-j9kpnto3c30m8fn4u5vh7cj9q7koq5ph.apps.googleusercontent.com"
-AllowedOrigins__0="https://attendance-beya.vercel.app"
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
