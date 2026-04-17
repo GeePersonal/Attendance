@@ -75,7 +75,7 @@ export default function DashboardLayout() {
           <div className="flex items-center justify-between h-20">
             {/* Logo & Brand */}
             <div className="flex-shrink-0 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/user-profile")}>
-              <img src="/images/MyLogo.png" alt="Logo" className="h-10 w-auto" />
+              <img src="/images/MyLogo.png" alt="Logo" className="h-16 w-auto" />
             </div>
 
             {/* Desktop Navigation Links */}

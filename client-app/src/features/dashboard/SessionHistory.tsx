@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import AppPaginations from "../../app/components/AppPaginations";
 import AppTableHeader from "../../app/components/AppTableHeader";
+import Tooltip from "../../app/components/Tooltip";
 import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import { Session } from "../../app/models/session";
@@ -271,52 +272,56 @@ function SessionHistory() {
 
               {/* Card Footer - Controls */}
               <div className="flex items-center justify-end gap-2 text-neutral-400 border-t border-white/5 pt-4 mt-auto">
-                <Link
-                  to={`/user-profile/session-details/${session.sessionId}`}
-                  className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 tooltip-trigger group/btn"
-                  title="View Roster"
-                >
-                  <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </Link>
-                <Link
-                  to={`/user-profile/generate-qr-code/${session.sessionId}`}
-                  className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 group/btn"
-                  title="Edit Session"
-                >
-                  <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </Link>
-                <button
-                  onClick={() => handleCloneSession(session.sessionId)}
-                  disabled={cloneLoading && target == session.sessionId}
-                  className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 group/btn"
-                  title="Clone Session"
-                >
-                  {cloneLoading && target == session.sessionId ? (
-                    <div className="h-5 w-5 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
-                  ) : (
+                <Tooltip label="View Roster">
+                  <Link
+                    to={`/user-profile/session-details/${session.sessionId}`}
+                    className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 group/btn"
+                  >
                     <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                  )}
-                </button>
-                <button
-                  onClick={() => handleDeleteSession(session.sessionId)}
-                  disabled={deleteLoading && target == session.sessionId}
-                  className="p-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-400 transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50 group/btn"
-                  title="Delete Archive"
-                >
-                  {deleteLoading && target == session.sessionId ? (
-                    <div className="h-5 w-5 border-2 border-t-transparent border-red-500 rounded-full animate-spin"></div>
-                  ) : (
-                    <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 group-hover/btn:rotate-3 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </Link>
+                </Tooltip>
+                <Tooltip label="Edit Session">
+                  <Link
+                    to={`/user-profile/generate-qr-code/${session.sessionId}`}
+                    className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 group/btn"
+                  >
+                    <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
-                  )}
-                </button>
+                  </Link>
+                </Tooltip>
+                <Tooltip label="Clone Session">
+                  <button
+                    onClick={() => handleCloneSession(session.sessionId)}
+                    disabled={cloneLoading && target == session.sessionId}
+                    className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 group/btn"
+                  >
+                    {cloneLoading && target == session.sessionId ? (
+                      <div className="h-5 w-5 border-2 border-t-transparent border-white rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    )}
+                  </button>
+                </Tooltip>
+                <Tooltip label="Delete Archive">
+                  <button
+                    onClick={() => handleDeleteSession(session.sessionId)}
+                    disabled={deleteLoading && target == session.sessionId}
+                    className="p-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-400 transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50 group/btn"
+                  >
+                    {deleteLoading && target == session.sessionId ? (
+                      <div className="h-5 w-5 border-2 border-t-transparent border-red-500 rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 group-hover/btn:rotate-3 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    )}
+                  </button>
+                </Tooltip>
               </div>
             </div>
           ))
