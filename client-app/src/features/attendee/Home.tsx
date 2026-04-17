@@ -73,7 +73,7 @@ function Home() {
   useEffect(() => {
     google.accounts.id.initialize({
       client_id:
-        "559758667407-k0a5jbbmsabs5v5e6carbuj4md1tluao.apps.googleusercontent.com",
+        "242008212164-j9kpnto3c30m8fn4u5vh7cj9q7koq5ph.apps.googleusercontent.com",
       callback: createAttendee,
     });
 
