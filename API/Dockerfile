@@ -2,10 +2,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
-COPY *.csproj ./
+COPY API/*.csproj ./
 RUN dotnet restore
 
-COPY . ./
+COPY API/ ./
 RUN dotnet publish -c Release -o out
 
 # Stage 2: Runtime
