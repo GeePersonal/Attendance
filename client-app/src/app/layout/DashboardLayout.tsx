@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Tooltip from "../components/Tooltip";
 import agent from "../../app/api/agent";
 import { User } from "../../app/models/user";
 
@@ -74,12 +75,7 @@ export default function DashboardLayout() {
           <div className="flex items-center justify-between h-20">
             {/* Logo & Brand */}
             <div className="flex-shrink-0 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/user-profile")}>
-              <div className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-              </div>
-              <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
-                Count Me In
-              </span>
+              <img src="/images/MyLogo.png" alt="Logo" className="h-10 w-auto" />
             </div>
 
             {/* Desktop Navigation Links */}
@@ -128,18 +124,20 @@ export default function DashboardLayout() {
               </NavLink>
 
               {/* Hamburger Button (Mobile only) */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-              >
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  {isMobileMenuOpen ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
-                  )}
-                </svg>
-              </button>
+              <Tooltip label={isMobileMenuOpen ? "Close Menu" : "Open Menu"} position="bottom">
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
+                >
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    {isMobileMenuOpen ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    )}
+                  </svg>
+                </button>
+              </Tooltip>
             </div>
           </div>
         </div>

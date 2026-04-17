@@ -5,16 +5,35 @@ import { Link, useNavigate } from "react-router-dom";
 import { signupFormSchema } from "./accountFormSchema";
 import agent from "../../app/api/agent";
 
+type StrengthLevel = { label: string; color: string; bars: number };
+
+function getPasswordStrength(pw: string): StrengthLevel {
+  if (!pw) return { label: "", color: "", bars: 0 };
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[a-z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  if (score <= 2) return { label: "Weak", color: "bg-red-500", bars: 1 };
+  if (score === 3) return { label: "Fair", color: "bg-yellow-400", bars: 2 };
+  if (score === 4) return { label: "Good", color: "bg-blue-400", bars: 3 };
+  return { label: "Strong", color: "bg-green-400", bars: 4 };
+}
+
 function SignUp() {
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(signupFormSchema),
   });
   const [showPassword, setShowPassword] = useState(false);
+  const passwordValue = watch("password", "");
+  const strength = getPasswordStrength(passwordValue ?? "");
 
   const onSubmit = async ({
     firstName,
@@ -194,6 +213,30 @@ function SignUp() {
                     </span>
                   </button>
                 </div>
+                {/* Strength meter */}
+                {passwordValue && passwordValue.length > 0 && (
+                  <div className="mt-2 space-y-1.5">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4].map((bar) => (
+                        <div
+                          key={bar}
+                          className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                            bar <= strength.bars ? strength.color : "bg-white/10"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    {strength.label && (
+                      <p className={`text-xs pl-1 font-medium ${
+                        strength.bars === 1 ? "text-red-400" :
+                        strength.bars === 2 ? "text-yellow-400" :
+                        strength.bars === 3 ? "text-blue-400" : "text-green-400"
+                      }`}>
+                        {strength.label}
+                      </p>
+                    )}
+                  </div>
+                )}
                 {errors.password && (
                   <p className="text-red-400 text-xs mt-1.5 pl-1">
                     {errors.password?.message}

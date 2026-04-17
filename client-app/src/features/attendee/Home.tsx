@@ -19,6 +19,7 @@ function Home() {
 
   const [loading, setLoading] = useState(false);
   const [attendee, setAttendee] = useState<Attendee>();
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -126,10 +127,30 @@ function Home() {
 
   function exitPageOnSave() {
     localStorage.removeItem("linkToken");
-    window.close();
+    setSaved(true);
   }
 
   if (loading) return <AppLoading />;
+
+  if (saved) return (
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-64 md:w-96 h-64 md:h-96 bg-white/[0.04] rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-64 md:w-96 h-64 md:h-96 bg-white/[0.02] rounded-full blur-[80px] pointer-events-none"></div>
+      <div className="relative z-10 bg-white/5 border border-white/10 rounded-3xl p-10 max-w-md w-full backdrop-blur-2xl shadow-2xl flex flex-col items-center text-center gap-6">
+        <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+          <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">You're All Set!</h2>
+          <p className="text-neutral-400 text-sm leading-relaxed">
+            Your attendance has been saved. You can safely close this tab.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 relative overflow-hidden">
@@ -138,7 +159,7 @@ function Home() {
 
       <div className="relative z-10 bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 max-w-md w-full backdrop-blur-2xl shadow-2xl">
         <div className="flex justify-center mb-8">
-          <img src="/images/logo.png" alt="Logo" className="w-30 h-20 opacity-90" />
+          <img src="/images/MyLogo.png" alt="Logo" className="w-30 h-20 opacity-90" />
         </div>
 
         <h1 className="text-2xl font-bold text-center text-white mb-6 tracking-tight">

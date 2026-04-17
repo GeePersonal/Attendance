@@ -1,4 +1,4 @@
-import { RouteObject, createBrowserRouter } from "react-router-dom";
+import { Navigate, RouteObject, createBrowserRouter } from "react-router-dom";
 import Login from "../../features/account/Login";
 import Home from "../../features/attendee/Home";
 import SessionDetails from "../../features/dashboard/SessionDetails";
@@ -50,7 +50,7 @@ export const Routes: RouteObject[] = [
             children: [
               {
                 index: true,
-                element: <CurrentSession />,
+                element: <Navigate to="current-session" replace />,
               },
               {
                 path: "current-session",

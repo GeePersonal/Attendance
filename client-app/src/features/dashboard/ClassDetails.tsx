@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import AppPaginations from "../../app/components/AppPaginations";
+import Tooltip from "../../app/components/Tooltip";
 import { useEffect, useState } from "react";
 import agent from "../../app/api/agent";
 import { Class } from "../../app/models/class";
@@ -128,15 +129,16 @@ function ClassDetails() {
                 <span className="block text-2xl font-light text-white">{classInfo.sessionsCount}</span>
                 <span className="text-neutral-500 text-xs uppercase tracking-wider">Sessions</span>
               </div>
-              <Link
-                to={`/user-profile/create-class/${classInfo.classId}`}
-                className="p-3 rounded-xl bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10 transition-all"
-                title="Edit Class"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-              </Link>
+              <Tooltip label="Edit Class">
+                <Link
+                  to={`/user-profile/create-class/${classInfo.classId}`}
+                  className="p-3 rounded-xl bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10 transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </Link>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -213,29 +215,31 @@ function ClassDetails() {
 
                   {/* Footer */}
                   <div className="flex items-center justify-end gap-2 text-neutral-400 border-t border-white/5 pt-4 mt-auto">
-                    <Link
-                      to={`/user-profile/session-details/${session.sessionId}`}
-                      className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all group/btn"
-                      title="View Roster"
-                    >
-                      <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </Link>
-                    <button
-                      onClick={() => handleRemoveSession(session.sessionId, session.sessionName)}
-                      disabled={removeTarget === session.sessionId}
-                      className="p-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-400 transition-all group/btn"
-                      title="Remove from class"
-                    >
-                      {removeTarget === session.sessionId ? (
-                        <div className="h-5 w-5 border-2 border-t-transparent border-red-500 rounded-full animate-spin"></div>
-                      ) : (
+                    <Tooltip label="View Roster">
+                      <Link
+                        to={`/user-profile/session-details/${session.sessionId}`}
+                        className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all group/btn"
+                      >
                         <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                      )}
-                    </button>
+                      </Link>
+                    </Tooltip>
+                    <Tooltip label="Remove from Class">
+                      <button
+                        onClick={() => handleRemoveSession(session.sessionId, session.sessionName)}
+                        disabled={removeTarget === session.sessionId}
+                        className="p-2.5 rounded-xl hover:bg-red-500/20 hover:text-red-400 transition-all group/btn"
+                      >
+                        {removeTarget === session.sessionId ? (
+                          <div className="h-5 w-5 border-2 border-t-transparent border-red-500 rounded-full animate-spin"></div>
+                        ) : (
+                          <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" />
+                          </svg>
+                        )}
+                      </button>
+                    </Tooltip>
                   </div>
                 </div>
               ))
