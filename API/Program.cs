@@ -69,7 +69,8 @@ else
     if (string.IsNullOrEmpty(connString))
     {
         // Fallback: parse DATABASE_URL (postgres:// format)
-        var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
+            ?? throw new InvalidOperationException("Neither CONNECTION_STRING nor DATABASE_URL environment variable is set.");
 
         connUrl = connUrl.Replace("postgres://", string.Empty);
         string pgUserPass = connUrl.Split("@")[0];
@@ -162,7 +163,12 @@ else
 
 app.UseCors("CorsPolicy");
 
-app.UseHttpsRedirection();
+// Fly.io terminates TLS at the edge and forwards plain HTTP internally,
+// so HTTPS redirection is only needed in local development.
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseAuthentication();
