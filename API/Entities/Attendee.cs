@@ -9,6 +9,5 @@ public class Attendee
     public Guid SessionId { get; set; }
     public Session Session { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-
+    public string? ScanLocationName { get; set; }
 }

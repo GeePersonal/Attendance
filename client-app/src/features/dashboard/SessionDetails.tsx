@@ -91,12 +91,15 @@ function SessionDetails() {
 
         autoTable(doc, {
           headStyles: { fillColor: "#616161" },
-          head: [["First Name", "Last Name", "Email", "MATNumber"]],
+          head: [["First Name", "Last Name", "Email", "MATNumber", "Scan Location"]],
           body: attendees.map((attendee) => [
             attendee.firstName,
             attendee.lastName,
             attendee.email,
             attendee.matNumber,
+            attendee.scanLocationName != null
+              ? attendee.scanLocationName
+              : 'N/A',
           ]),
         });
 
@@ -144,7 +147,16 @@ function SessionDetails() {
               {sessionDetails?.status}
             </span>
           </div>
-          <p className="text-neutral-500 font-light">Session Details & Attendees Overview</p>
+          <p className="text-neutral-500 font-light">Session Details &amp; Attendees Overview</p>
+          <Link
+            to={`/user-profile/analytics/session/${id}`}
+            className="inline-flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white border border-white/10 hover:border-white/30 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full transition-all mt-1 w-fit"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            View Analytics
+          </Link>
         </div>
 
         <div className="flex flex-col items-start md:items-end p-4 bg-white/[0.02] border border-white/5 rounded-2xl w-full md:w-auto">
@@ -194,6 +206,7 @@ function SessionDetails() {
                 <th className="py-4 px-6 font-medium">Last Name</th>
                 <th className="py-4 px-6 font-medium">Email</th>
                 <th className="py-4 px-6 font-medium text-center">MATNumber</th>
+                <th className="py-4 px-6 font-medium text-center">Scan Location</th>
                 <th className="py-4 px-6 font-medium text-center">Joined At</th>
               </tr>
             </thead>
@@ -228,6 +241,19 @@ function SessionDetails() {
                     </span>
                   </td>
                   <td className="py-4 px-6 whitespace-nowrap text-center">
+                    {attendee.scanLocationName ? (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                        <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {attendee.scanLocationName}
+                      </span>
+                    ) : (
+                      <span className="text-neutral-600 text-xs">—</span>
+                    )}
+                  </td>
+                  <td className="py-4 px-6 whitespace-nowrap text-center">
                     <div className="flex items-center justify-center text-neutral-400">
                       <svg className="w-4 h-4 mr-1.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -241,7 +267,7 @@ function SessionDetails() {
               ))}
               {(!sessionDetails?.attendees || sessionDetails.attendees.length === 0) && (
                 <tr>
-                  <td colSpan={5} className="py-16 text-center">
+                  <td colSpan={6} className="py-16 text-center">
                     <div className="flex flex-col items-center justify-center text-neutral-500">
                       <svg className="w-14 h-14 mb-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -286,6 +312,15 @@ function SessionDetails() {
                   </svg>
                   <span>Joined {formatDistanceToNow(new Date(attendee.createdAt))} ago</span>
                 </div>
+                {attendee.scanLocationName && (
+                  <div className="flex items-center text-xs text-neutral-400">
+                    <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>{attendee.scanLocationName}</span>
+                  </div>
+                )}
               </div>
             </div>
           ))}

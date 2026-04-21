@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { router } from "../routes/Routes";
 import { Attendee } from "../models/attendance";
 import { Pagination } from "../models/pagination";
+import { ClassAnalytics, OverallAnalytics, SessionAnalytics } from "../models/analytics";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true;
@@ -104,7 +105,7 @@ const requests = {
 };
 
 const Attendance = {
-    createAttendee: (sessionId: string, accessToken: string, linkToken: string) => requests.post<Attendee>(`/attendance/createAttendee/${sessionId}?accessToken=${accessToken}&linkToken=${linkToken}`, {}),
+    createAttendee: (sessionId: string, accessToken: string, linkToken: string, locationName?: string | null) => requests.post<Attendee>(`/attendance/createAttendee/${sessionId}?accessToken=${accessToken}&linkToken=${linkToken}${locationName ? `&locationName=${encodeURIComponent(locationName)}` : ''}`, {}),
     getAttendees: (sessionId: string, params?: URLSearchParams) => requests.get<Pagination<SessionAttendees>>(`/attendance/sessionAttendees/${sessionId}`, params),
     exportToCSV: (sessionId: string) => requests.get<Blob>(`/attendance/exportToCSV/${sessionId}`),
     getAllSessionAttendees: (sessionId: string) => requests.get<Attendee[]>(`/attendance/getAllSessionAttendees/${sessionId}`),
@@ -139,11 +140,18 @@ const ClassApi = {
     removeSessionFromClass: (classId: string, sessionId: string) => requests.del<void>(`/class/removeSessionFromClass/${classId}/${sessionId}`),
 };
 
+const Analytics = {
+    getOverall: () => requests.get<OverallAnalytics>('/analytics/overall'),
+    getSession: (sessionId: string) => requests.get<SessionAnalytics>(`/analytics/session/${sessionId}`),
+    getClass: (classId: string) => requests.get<ClassAnalytics>(`/analytics/class/${classId}`),
+};
+
 const agent = {
     Attendance,
     Account,
     Session,
     Class: ClassApi,
+    Analytics,
 }
 
 export default agent;

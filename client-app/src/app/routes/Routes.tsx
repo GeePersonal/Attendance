@@ -17,6 +17,9 @@ import DashboardLayout from "../layout/DashboardLayout";
 import ClassList from "../../features/dashboard/ClassList";
 import ClassDetails from "../../features/dashboard/ClassDetails";
 import CreateClassForm from "../../features/dashboard/CreateClassForm";
+import OverallAnalytics from "../../features/dashboard/OverallAnalytics";
+import SessionAnalytics from "../../features/dashboard/SessionAnalytics";
+import ClassAnalytics from "../../features/dashboard/ClassAnalytics";
 
 export const Routes: RouteObject[] = [
   {
@@ -83,6 +86,18 @@ export const Routes: RouteObject[] = [
               {
                 path: "session-details/:id",
                 element: <SessionDetails />,
+              },
+              {
+                path: "analytics",
+                element: <OverallAnalytics />,
+              },
+              {
+                path: "analytics/session/:id",
+                element: <SessionAnalytics />,
+              },
+              {
+                path: "analytics/class/:id",
+                element: <ClassAnalytics />,
               },
             ],
           },

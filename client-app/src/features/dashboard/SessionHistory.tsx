@@ -154,9 +154,20 @@ function SessionHistory() {
   return (
     <div className="w-full mx-auto px-4 md:px-8 py-8 animate-fade-in-up">
       
-      <div className="mb-10 text-center md:text-left">
-        <h2 className="text-4xl font-light tracking-tight text-white mb-2">History</h2>
-        <p className="text-neutral-500 font-light max-w-2xl">Review past activity, track attendance numbers, and manage your session archives.</p>
+      <div className="mb-10 flex items-start justify-between flex-wrap gap-4">
+        <div className="text-center md:text-left">
+          <h2 className="text-4xl font-light tracking-tight text-white mb-2">History</h2>
+          <p className="text-neutral-500 font-light max-w-2xl">Review past activity, track attendance numbers, and manage your session archives.</p>
+        </div>
+        <Link
+          to="/user-profile/analytics"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-neutral-300 text-sm hover:bg-white/10 hover:text-white transition-all shrink-0"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          Overall Analytics
+        </Link>
       </div>
 
       {classes.length > 0 && (
@@ -289,6 +300,16 @@ function SessionHistory() {
                   >
                     <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                  </Link>
+                </Tooltip>
+                <Tooltip label="Analytics">
+                  <Link
+                    to={`/user-profile/analytics/session/${session.sessionId}`}
+                    className="p-2.5 rounded-xl hover:bg-white/10 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-white/50 group/btn"
+                  >
+                    <svg className="w-5 h-5 group-hover/btn:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </Link>
                 </Tooltip>

@@ -20,6 +20,41 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [attendee, setAttendee] = useState<Attendee>();
   const [saved, setSaved] = useState(false);
+  const [scanLocationName, setScanLocationName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      console.log('[Location] Requesting geolocation...');
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const { latitude, longitude } = pos.coords;
+          console.log('[Location] Coordinates captured:', { latitude, longitude });
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+              { headers: { 'Accept-Language': 'en' } }
+            );
+            const data = await res.json();
+            const addr = data.address || {};
+            const city = addr.city || addr.town || addr.village || addr.county || '';
+            const country = addr.country || '';
+            const name = [city, country].filter(Boolean).join(', ') || data.display_name || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+            console.log('[Location] Resolved name:', name);
+            setScanLocationName(name);
+          } catch (err) {
+            console.warn('[Location] Reverse geocoding failed:', err);
+            setScanLocationName(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          }
+        },
+        (err) => {
+          console.warn('[Location] Failed to get location:', err.code, err.message);
+          setScanLocationName(null);
+        }
+      );
+    } else {
+      console.warn('[Location] Geolocation not supported by this browser');
+    }
+  }, []);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -110,10 +145,12 @@ function Home() {
   async function createAttendee(response: any) {
     try {
       setLoading(true);
+      console.log('[Location] Sending to API - locationName:', scanLocationName);
       const newAttendee = await agent.Attendance.createAttendee(
         sessionInfo.sessionId,
         response.credential,
-        sessionInfo.linkToken
+        sessionInfo.linkToken,
+        scanLocationName
       );
 
       setAttendee(newAttendee);

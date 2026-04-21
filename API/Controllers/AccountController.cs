@@ -7,6 +7,7 @@ using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
@@ -32,6 +33,7 @@ public class AccountController : BaseApiController
 
     [AllowAnonymous]
     [HttpPost("login")]
+    [EnableRateLimiting("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);

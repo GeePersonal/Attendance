@@ -9,6 +9,7 @@ export interface Attendee {
     sessionId: string
     session: any
     createdAt: string
+    scanLocationName: string | null
   }
 
 export interface AttendanceLinkToken {

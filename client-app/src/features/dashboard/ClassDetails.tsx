@@ -10,6 +10,9 @@ import { MetaData } from "../../app/models/pagination";
 import { getAxiosParams } from "../../app/utils";
 import { confirmAlert } from "react-confirm-alert";
 import { format } from "date-fns";
+import { ClassAnalytics, ClassAttendeeAnalytics } from "../../app/models/analytics";
+
+type Tab = "sessions" | "analytics";
 
 function ClassDetails() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +21,10 @@ function ClassDetails() {
   const [metaData, setMetaData] = useState<MetaData>();
   const [loading, setLoading] = useState(false);
   const [removeTarget, setRemoveTarget] = useState("");
+  const [activeTab, setActiveTab] = useState<Tab>("sessions");
+  const [analyticsData, setAnalyticsData] = useState<ClassAnalytics | null>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsFetched, setAnalyticsFetched] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -32,6 +39,26 @@ function ClassDetails() {
       setClassInfo(data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "analytics" && id && !analyticsFetched) {
+      fetchAnalytics();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, id]);
+
+  const fetchAnalytics = async () => {
+    try {
+      setAnalyticsLoading(true);
+      const result = await agent.Analytics.getClass(id!);
+      setAnalyticsData(result);
+      setAnalyticsFetched(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAnalyticsLoading(false);
     }
   };
 
@@ -144,34 +171,66 @@ function ClassDetails() {
         </div>
       )}
 
-      {/* Sessions list */}
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-lg font-light text-white tracking-wide">Sessions</h3>
-        <Link
-          to={`/user-profile/generate-qr-code`}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-neutral-300 text-sm hover:bg-white/10 hover:text-white transition-all"
+      {/* Tabs */}
+      <div className="flex items-center gap-1 mb-6 bg-white/[0.03] border border-white/10 rounded-2xl p-1 w-fit">
+        <button
+          onClick={() => setActiveTab("sessions")}
+          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm transition-all ${
+            activeTab === "sessions"
+              ? "bg-white/10 text-white border border-white/10"
+              : "text-neutral-500 hover:text-white hover:bg-white/5 border border-transparent"
+          }`}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
-          Add Session
-        </Link>
+          Sessions
+        </button>
+        <button
+          onClick={() => setActiveTab("analytics")}
+          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm transition-all ${
+            activeTab === "analytics"
+              ? "bg-white/10 text-white border border-white/10"
+              : "text-neutral-500 hover:text-white hover:bg-white/5 border border-transparent"
+          }`}
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          Analytics
+        </button>
       </div>
 
-      {loading ? (
-        <AppLoading />
-      ) : (
+      {/* ── Sessions Tab ── */}
+      {activeTab === "sessions" && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sessions.length === 0 ? (
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 py-12 text-center text-neutral-500 bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl">
-                <div className="flex flex-col items-center justify-center space-y-4">
-                  <svg className="w-12 h-12 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  <p>No sessions in this class yet.</p>
-                </div>
-              </div>
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="text-lg font-light text-white tracking-wide">Sessions</h3>
+            <Link
+              to={`/user-profile/generate-qr-code`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-neutral-300 text-sm hover:bg-white/10 hover:text-white transition-all"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Add Session
+            </Link>
+          </div>
+
+          {loading ? (
+            <AppLoading />
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sessions.length === 0 ? (
+                  <div className="col-span-1 md:col-span-2 lg:col-span-3 py-12 text-center text-neutral-500 bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl">
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <svg className="w-12 h-12 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      <p>No sessions in this class yet.</p>
+                    </div>
+                  </div>
             ) : (
               sessions.map((session, index) => (
                 <div
@@ -255,6 +314,164 @@ function ClassDetails() {
           )}
         </>
       )}
+        </>
+      )}
+
+      {/* ── Analytics Tab ── */}
+      {activeTab === "analytics" && (
+        <ClassAnalyticsTab data={analyticsData} loading={analyticsLoading} />
+      )}
+    </div>
+  );
+}
+
+// ── Class Analytics Tab ──────────────────────────────────────────────────────
+
+function ClassAnalyticsTab({ data, loading }: { data: ClassAnalytics | null; loading: boolean }) {
+  const [search, setSearch] = useState("");
+  const [sortField, setSortField] = useState<keyof ClassAttendeeAnalytics>("attendancePercentage");
+  const [sortAsc, setSortAsc] = useState(false);
+
+  if (loading) return <AppLoading />;
+  if (!data) return null;
+
+  const handleSort = (field: keyof ClassAttendeeAnalytics) => {
+    if (sortField === field) setSortAsc(!sortAsc);
+    else { setSortField(field); setSortAsc(false); }
+  };
+
+  const filteredAttendees = data.attendeeBreakdown
+    .filter((a) => {
+      const term = search.toLowerCase();
+      return (
+        !term ||
+        a.firstName.toLowerCase().includes(term) ||
+        a.lastName.toLowerCase().includes(term) ||
+        a.email.toLowerCase().includes(term) ||
+        (a.matNumber ?? "").toLowerCase().includes(term)
+      );
+    })
+    .sort((a, b) => {
+      const av = a[sortField] as any;
+      const bv = b[sortField] as any;
+      if (av < bv) return sortAsc ? -1 : 1;
+      if (av > bv) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
+  const rateColor = (pct: number) =>
+    pct >= 75 ? "text-green-400" : pct >= 50 ? "text-yellow-400" : "text-red-400";
+  const barColor = (pct: number) =>
+    pct >= 75 ? "bg-green-500/70" : pct >= 50 ? "bg-yellow-500/70" : "bg-red-500/70";
+
+  return (
+    <div className="space-y-8">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+          <span className="text-2xl font-light text-white">{data.totalSessions}</span>
+          <span className="text-neutral-500 text-xs tracking-wide uppercase">Total Sessions</span>
+        </div>
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+          <span className="text-2xl font-light text-white">{data.totalUniqueAttendees}</span>
+          <span className="text-neutral-500 text-xs tracking-wide uppercase">Unique Attendees</span>
+        </div>
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+          <span className="text-2xl font-light text-white">{data.averageAttendeesPerSession}</span>
+          <span className="text-neutral-500 text-xs tracking-wide uppercase">Avg / Session</span>
+        </div>
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+          <span className="text-2xl font-light text-white">{data.maxAttendeesInSession}</span>
+          <span className="text-neutral-500 text-xs tracking-wide uppercase">Best Session</span>
+        </div>
+        <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+          <span className={`text-2xl font-light ${rateColor(data.overallAttendanceRate)}`}>{data.overallAttendanceRate}%</span>
+          <span className="text-neutral-500 text-xs tracking-wide uppercase">Overall Rate</span>
+        </div>
+      </div>
+
+      {/* Attendee Table */}
+      <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+        <div className="p-6 border-b border-white/10 flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h2 className="text-white font-light text-lg">Attendee Attendance</h2>
+            <p className="text-neutral-500 text-xs mt-0.5">
+              All attendees across all sessions · sorted by attendance rate
+            </p>
+          </div>
+          <input
+            type="text"
+            placeholder="Search attendees..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-white/30 w-56"
+          />
+        </div>
+
+        {filteredAttendees.length === 0 ? (
+          <p className="text-neutral-500 text-sm p-6">No attendees found.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="border-b border-white/10 text-neutral-500 text-xs uppercase tracking-widest">
+                  <th className="py-3 px-4 font-normal">Student</th>
+                  <th className="py-3 px-4 font-normal">Email</th>
+                  <th className="py-3 px-4 font-normal">MAT Number</th>
+                  <th
+                    className="py-3 px-4 font-normal cursor-pointer select-none hover:text-white transition-colors"
+                    onClick={() => handleSort("sessionsAttended")}
+                  >
+                    Sessions Attended {sortField === "sessionsAttended" ? (sortAsc ? "↑" : "↓") : "↕"}
+                  </th>
+                  <th
+                    className="py-3 px-4 font-normal cursor-pointer select-none hover:text-white transition-colors"
+                    onClick={() => handleSort("attendancePercentage")}
+                  >
+                    Attendance % {sortField === "attendancePercentage" ? (sortAsc ? "↑" : "↓") : "↕"}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {filteredAttendees.map((a, i) => {
+                  const pct = a.attendancePercentage;
+                  return (
+                    <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-xs text-white font-medium shrink-0">
+                            {a.firstName.charAt(0)}{a.lastName.charAt(0)}
+                          </div>
+                          <span className="text-white font-medium">{a.firstName} {a.lastName}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-neutral-500 text-xs">{a.email}</td>
+                      <td className="py-3 px-4 text-neutral-500 text-xs">{a.matNumber || "—"}</td>
+                      <td className="py-3 px-4">
+                        <span className="text-neutral-300 font-medium">
+                          {a.sessionsAttended}
+                          <span className="text-neutral-600 font-normal"> / {a.totalSessions}</span>
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-20 bg-white/5 rounded-full h-1.5">
+                            <div
+                              className={`${barColor(pct)} h-1.5 rounded-full transition-all`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className={`${rateColor(pct)} text-xs font-medium w-10 text-right`}>{pct}%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

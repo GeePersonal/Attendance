@@ -25,19 +25,21 @@ public partial class AttendanceController : BaseApiController
     private readonly UserManager<AppUser> _userManager;
     private readonly TokenService _tokenService;
     private readonly IMapper _mapper;
+    private readonly ILogger<AttendanceController> _logger;
 
-    public AttendanceController(ApplicationDbContext context, IConfiguration config, UserManager<AppUser> userManager, TokenService tokenService, IMapper mapper)
+    public AttendanceController(ApplicationDbContext context, IConfiguration config, UserManager<AppUser> userManager, TokenService tokenService, IMapper mapper, ILogger<AttendanceController> logger)
     {
         _mapper = mapper;
         _tokenService = tokenService;
         _userManager = userManager;
         _context = context;
         _config = config;
+        _logger = logger;
     }
 
     [AllowAnonymous]
     [HttpPost("createAttendee/{sessionId}")]
-    public async Task<ActionResult<AttendeeDto>> CreateAttendee(string sessionId, string accessToken, string linkToken)
+    public async Task<ActionResult<AttendeeDto>> CreateAttendee(string sessionId, string accessToken, string linkToken, string? locationName = null)
     {
         var session = await _context.Sessions
             .Include(x => x.Attendees)
@@ -82,12 +84,14 @@ public partial class AttendanceController : BaseApiController
         }
 
         //create a new attendee
+        _logger.LogInformation("[Location] Received for {Email} - Location: {LocationName}", payload.Email, locationName ?? "null");
         attendee = new Attendee
         {
             Email = payload.Email,
             FirstName = payload.GivenName,
             LastName = payload.FamilyName,
-            MATNumber = MyRegex().Match(payload.Email).Value ?? "000000"
+            MATNumber = MyRegex().Match(payload.Email).Value ?? "000000",
+            ScanLocationName = locationName
             // MATNumber = Regex.Match(payload.Email, @"\d+").Value ?? "000000"
 
         };

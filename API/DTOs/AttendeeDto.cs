@@ -8,5 +8,5 @@ public class AttendeeDto
     public string Email { get; set; }
     public string MATNumber { get; set; }
     public DateTime CreatedAt { get; set; }
-
+    public string? ScanLocationName { get; set; }
 }
