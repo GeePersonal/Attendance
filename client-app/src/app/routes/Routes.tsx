@@ -20,6 +20,7 @@ import CreateClassForm from "../../features/dashboard/CreateClassForm";
 import OverallAnalytics from "../../features/dashboard/OverallAnalytics";
 import SessionAnalytics from "../../features/dashboard/SessionAnalytics";
 import ClassAnalytics from "../../features/dashboard/ClassAnalytics";
+import Support from "../../features/dashboard/Support";
 
 export const Routes: RouteObject[] = [
   {
@@ -98,6 +99,10 @@ export const Routes: RouteObject[] = [
               {
                 path: "analytics/class/:id",
                 element: <ClassAnalytics />,
+              },
+              {
+                path: "support",
+                element: <Support />,
               },
             ],
           },
