@@ -12,6 +12,6 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://+:8080
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "API.dll"]
+# Render may provide a dynamic PORT at runtime; fall back to 8080 for local Docker runs.
+ENTRYPOINT ["sh", "-c", "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet API.dll"]
